@@ -1,0 +1,109 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quality Data Analysis — Nang Hom Noon Aye</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/@sgratzl/chartjs-chart-boxplot@4"></script>
+<style>
+:root{--ink:#1b2a3a;--soft:#5b6b7a;--line:#e2e8ee;--bg:#f7f9fb}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.55}
+nav{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);padding:10px 16px;display:flex;gap:14px;flex-wrap:wrap;font-size:13.5px;z-index:10}
+nav a{color:var(--soft);text-decoration:none}nav a:hover{color:var(--ink)}
+.wrap{max-width:860px;margin:0 auto;padding:24px 16px 70px}
+header h1{font-size:27px;margin:6px 0 4px}.lead{color:var(--soft);font-size:15px}
+section{border-top:1px solid var(--line);padding-top:26px;margin-top:34px}
+h2{font-size:20px;margin:0 0 4px}.tag{font-size:12.5px;color:var(--soft);margin:0 0 12px}
+p{font-size:15px}.note{color:var(--soft);font-size:13px}
+.cards{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0}
+.card{flex:1;min-width:130px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.card .n{font-size:23px;font-weight:700}.card .l{font-size:12px;color:var(--soft)}
+.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0}
+footer{border-top:1px solid var(--line);margin-top:36px;padding-top:16px;color:var(--soft);font-size:13px}
+a.plain{color:#1F5C7A}
+.c1{color:#1F3864}.c2{color:#7A4B2B}.c3{color:#1F5C7A}.c4{color:#614A7A}.c5{color:#2E7D32}.c6{color:#00695C}
+</style></head><body>
+<nav>
+<a href="#top"><b>Quality Data Analysis</b></a>
+<a href="#s1">Sampling</a><a href="#s2">Descriptive stats</a><a href="#s3">Support tickets</a>
+<a href="#s4">Correlation</a><a href="#s5">Boxplots</a><a href="#s6">Length of stay</a>
+</nav>
+<div class="wrap" id="top">
+<header><h1>Quality Data Analysis</h1>
+<p class="lead">Small data-analysis exercises applying statistics to quality-control and healthcare scenarios — Nang Hom Noon Aye. Charts render live in the browser.</p></header>
+
+<section id="s1"><h2 class="c1">Sampling — estimating a defect rate</h2>
+<p class="tag">Random vs. biased sampling</p>
+<p>Inspecting every unit is impractical, so you sample. A representative random sample estimates the true defect rate well; a one-machine (biased) sample can mislead.</p>
+<div class="cards">
+<div class="card"><div class="n c1">5.0%</div><div class="l">True rate</div></div>
+<div class="card"><div class="n c1">3.3%</div><div class="l">Random sample</div></div>
+<div class="card"><div class="n c1">3.3%</div><div class="l">Biased sample</div></div></div>
+<div class="panel"><canvas id="ch1" height="130"></canvas></div></section>
+
+<section id="s2"><h2 class="c2">Descriptive statistics — loaf weights</h2>
+<p class="tag">Mean, median, spread, outliers</p>
+<p>50 bread loaves weighed (grams). These measures show whether the process is stable and consistent.</p>
+<div class="cards" id="cards2"></div>
+<div class="panel"><canvas id="ch2" height="130"></canvas></div></section>
+
+<section id="s3"><h2 class="c3">Support tickets — distribution, categories & Pareto</h2>
+<p class="tag">Histogram, pie, and Pareto</p>
+<p>The same support data three ways. Password/account issues are most <i>frequent</i>, but software bugs consume the most <i>time</i> — the "vital few".</p>
+<div class="panel"><canvas id="ch3a" height="120"></canvas></div>
+<div class="panel"><canvas id="ch3b" height="140"></canvas></div>
+<div class="panel"><canvas id="ch3c" height="120"></canvas></div>
+<div class="panel"><canvas id="ch3d" height="120"></canvas></div></section>
+
+<section id="s4"><h2 class="c4">Scatterplot & correlation</h2>
+<p class="tag">Temperature vs. part strength</p>
+<p>Each dot is a part: temperature (x) vs strength (y). Shows the direction and strength of the relationship, plus outliers.</p>
+<div class="cards" id="cards4"></div>
+<div class="panel"><canvas id="ch4" height="140"></canvas></div></section>
+
+<section id="s5"><h2 class="c5">Boxplots by production line</h2>
+<p class="tag">Comparing a factor across groups</p>
+<p>Sugar content (%) per line. If the boxes line up, the line doesn't matter; here <b>Line C</b> sits higher, so it needs attention.</p>
+<div class="panel"><canvas id="ch5" height="140"></canvas></div></section>
+
+<section id="s6"><h2 class="c6">Hospital length of stay — empirical CDF</h2>
+<p class="tag">Healthcare / discharge planning</p>
+<p>An empirical CDF reads the share of patients discharged within any number of days, straight from the data — useful for bed planning.</p>
+<div class="cards" id="cards6"></div>
+<div class="panel"><canvas id="ch6" height="140"></canvas></div></section>
+
+<footer>Built with JavaScript &amp; Chart.js &middot;
+<a class="plain" href="https://github.com/Nanghomnoonaye/Quality-DataAnalysis">GitHub</a> &middot;
+<a class="plain" href="https://linkedin.com/in/nang-hom-n">LinkedIn</a></footer>
+</div>
+<script>
+// 1 sampling
+new Chart(ch1,{type:'bar',data:{labels:['True','Random','Biased'],datasets:[{data:[0.05,0.0333333333333333,0.0333333333333333],backgroundColor:['#1F3864','#2E7D6F','#C0473B']}]},options:{plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>(v*100).toFixed(0)+'%'}}}}});
+// 2 descriptive
+const w=[503, 513.3, 479.7, 503.7, 510.3, 502.2, 496.2, 494.4, 507.6, 492.3, 500.6, 496.9, 497.4, 502.9, 479.1, 480, 492.6, 455, 514.7, 506.1, 514.4, 498.7, 482.1, 506, 512.4, 520.6, 488.5, 494.6, 506.1, 504.7, 496.1, 548, 506.3, 490.3, 503.7, 515.7, 497.3, 505.1, 491.1, 503, 499.4, 504.7, 492.1, 495.9, 505.1, 488.8, 493.8, 489.3, 506.7, 475.8];const n2=w.length,s2=[...w].sort((a,b)=>a-b);
+const mean2=w.reduce((a,b)=>a+b,0)/n2,md2=(s2[n2-1>>1]+s2[Math.ceil((n2-1)/2)])/2;
+const sd2=Math.sqrt(w.reduce((a,b)=>a+(b-mean2)**2,0)/(n2-1));
+const q2=p=>{const i=p*(n2-1),lo=Math.floor(i);return s2[lo]+(s2[Math.min(lo+1,n2-1)]-s2[lo])*(i-lo);};
+cards2.innerHTML=[["Mean",mean2.toFixed(1)],["Median",md2.toFixed(1)],["Std dev",sd2.toFixed(1)],["IQR",(q2(.75)-q2(.25)).toFixed(1)]].map(c=>`<div class="card"><div class="n c2">${c[1]}</div><div class="l">${c[0]} (g)</div></div>`).join('');
+let b2=[460,470,480,490,500,510,520,530,540,550],p2=-1e9,l2=[],c2=[];for(const b of b2){l2.push('≤'+b);c2.push(s2.filter(x=>x>p2&&x<=b).length);p2=b;}
+new Chart(ch2,{type:'bar',data:{labels:l2,datasets:[{data:c2,backgroundColor:'#7A4B2B'}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+// 3 support
+const resp=[1.44, 1.5, 2.1, 3.04, 1.92, 1.44, 1.33, 3.6, 6, 1.56, 1.46, 1.29, 3.28, 1.9, 12, 0.7, 1.73, 15.5, 3.48, 0.65, 4.31, 1.47, 1.63, 0.72, 1.03, 1.92, 1.03, 1.56, 5.35, 2.09, 0.71, 9.8, 1.66, 4.5, 5.53, 2.01, 0.62, 0.43, 2.42, 1.63, 1.78, 1.4, 1.92, 1.19, 5.93, 1.79, 2.99, 1.34, 0.77, 2.16, 7.31, 2.16, 0.77, 6.39, 0.82, 1.46, 1.59, 1.33, 1.72, 3.74];let bb=[1,2,3,4,5,6,8,10,12,16],pp=-1e9,ll=[],cc=[];for(const b of bb){ll.push('≤'+b+'h');cc.push(resp.filter(x=>x>pp&&x<=b).length);pp=b;}
+new Chart(ch3a,{type:'bar',data:{labels:ll,datasets:[{data:cc,backgroundColor:'#1F5C7A'}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+new Chart(ch3b,{type:'pie',data:{labels:["Software Bug", "Account Issue", "Payment Problem", "Feature Request"],datasets:[{data:[18, 12, 21, 9],backgroundColor:['#1F5C7A','#2E7D6F','#C08A1C','#8A5AA8']}]}});
+function par(el,lab,v,cm,col,t){new Chart(el,{data:{labels:lab,datasets:[{type:'bar',label:t,data:v,backgroundColor:col,yAxisID:'y'},{type:'line',label:'Cumulative %',data:cm.map(x=>x*100),borderColor:'#C0473B',backgroundColor:'#C0473B',yAxisID:'y1'}]},options:{scales:{y:{beginAtZero:true,position:'left'},y1:{beginAtZero:true,max:100,position:'right',ticks:{callback:v=>v+'%'},grid:{drawOnChartArea:false}}}}});}
+par(ch3c,["Password Reset", "Account Issue", "Software Bug", "Feature Request"],[40, 30, 15, 10],[0.421, 0.737, 0.895, 1.0],'#1F5C7A','Count (frequency)');
+par(ch3d,["Software Bug", "Account Issue", "Feature Request", "Password Reset"],[90, 24, 15, 8],[0.657, 0.832, 0.942, 1.0],'#2E7D6F','Total hours (time)');
+// 4 scatter
+const pts=[[306, 497], [300, 476.7], [298, 496.1], [335, 525], [247, 422.6], [174, 321.6], [181, 379.2], [275, 433.6], [296, 438.7], [349, 538.7], [197, 471.1], [193, 396.1], [180, 560], [252, 390.4], [194, 360.2], [250, 478.5], [190, 388.4], [186, 389.2], [155, 384.9], [183, 362.4], [187, 427.7], [227, 466.3], [224, 451.4], [196, 405.3], [335, 524.3], [241, 403.2], [240, 362.9], [246, 396.1], [329, 563.3], [224, 412.4], [249, 400.1], [223, 392.9], [216, 399.2], [251, 433.5], [325, 491.3], [267, 487.2], [336, 493.8], [197, 399], [300, 300], [301, 478.5]];const n4=pts.length;const mx=pts.reduce((a,p)=>a+p[0],0)/n4,my=pts.reduce((a,p)=>a+p[1],0)/n4;
+let sxy=0,sx=0,sy=0;for(const p of pts){sxy+=(p[0]-mx)*(p[1]-my);sx+=(p[0]-mx)**2;sy+=(p[1]-my)**2;}const r4=sxy/Math.sqrt(sx*sy);
+cards4.innerHTML=[["Correlation r",r4.toFixed(2)],["R²",(r4*r4).toFixed(2)],["Parts",n4]].map(c=>`<div class="card"><div class="n c4">${c[1]}</div><div class="l">${c[0]}</div></div>`).join('');
+new Chart(ch4,{type:'scatter',data:{datasets:[{data:pts.map(p=>({x:p[0],y:p[1]})),backgroundColor:'#614A7A'}]},options:{plugins:{legend:{display:false}},scales:{x:{title:{display:true,text:'Temperature (°C)'}},y:{title:{display:true,text:'Strength'}}}}});
+// 5 boxplot
+const lines={"Line A": [10.12, 10.59, 11.02, 11.11, 10.97, 10.52, 10.63, 10.4, 9.98, 10.31, 10.88, 10.6, 10.37, 10.08, 10.46], "Line B": [10.37, 10.61, 10.79, 9.69, 10.56, 10.02, 10.23, 10.11, 11.04, 10.87, 10.8, 10.31, 10.03, 10.45, 10.68], "Line C": [12.36, 12.74, 12.22, 13.29, 12.73, 13.39, 12.52, 12.28, 11.98, 12.8, 12.92, 12.48, 12.6, 12.26, 12.19], "Line D": [10.27, 9.56, 9.95, 10.42, 10.46, 10.89, 10.68, 10.59, 10.42, 9.39, 10.42, 10, 10.62, 10.27, 10.25]};
+new Chart(ch5,{type:'boxplot',data:{labels:Object.keys(lines),datasets:[{label:'Sugar %',data:Object.values(lines),backgroundColor:'rgba(46,125,50,0.3)',borderColor:'#2E7D32'}]},options:{plugins:{legend:{display:false}},scales:{y:{title:{display:true,text:'Sugar (%)'}}}}});
+// 6 CDF
+const los=[3.3, 3.6, 4, 4.1, 4.3, 4.4, 4.4, 4.5, 4.7, 4.8, 4.9, 5.3, 5.3, 6, 6.3, 6.3, 6.4, 7, 7.2, 7.3, 7.3, 7.4, 7.4, 7.5, 7.5, 7.6, 7.7, 7.7, 7.8, 7.8, 8.1, 8.3, 8.3, 8.6, 8.8, 8.8, 8.9, 9, 9.1, 9.2, 9.3, 9.3, 9.5, 10, 10.1, 10.5, 10.5, 10.5, 10.5, 10.8, 10.8, 11.4, 11.5, 11.7, 11.9, 12.4, 12.6, 12.7, 13.1, 13.5, 13.6, 14.2, 14.3, 14.4, 14.5, 15.1, 16.2, 16.3, 16.5, 16.7, 16.9, 17, 17.1, 18.6, 18.9, 20.9, 22.3, 22.5, 24.9, 25.6];const n6=los.length,s6=[...los].sort((a,b)=>a-b);
+const pct=d=>s6.filter(x=>x<=d).length/n6;const mean6=los.reduce((a,b)=>a+b,0)/n6,md6=(s6[n6-1>>1]+s6[Math.ceil((n6-1)/2)])/2;
+cards6.innerHTML=[[n6,"Patients"],[(pct(10)*100).toFixed(0)+"%","≤10 days"],[md6.toFixed(1),"Median (days)"],[mean6.toFixed(1),"Mean (days)"]].map(c=>`<div class="card"><div class="n c6">${c[0]}</div><div class="l">${c[1]}</div></div>`).join('');
+new Chart(ch6,{type:'line',data:{datasets:[{label:'CDF',data:s6.map((x,i)=>({x:x,y:(i+1)/n6})),borderColor:'#00695C',backgroundColor:'#00695C',pointRadius:2}]},options:{plugins:{legend:{display:false}},scales:{x:{type:'linear',title:{display:true,text:'Length of stay (days)'}},y:{min:0,max:1,ticks:{callback:v=>(v*100)+'%'},title:{display:true,text:'Cumulative %'}}}}});
+</script></body></html>
