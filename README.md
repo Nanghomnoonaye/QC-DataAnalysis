@@ -1,6 +1,6 @@
 # Quality Data Analysis
 
-Small data-analysis exercises applying statistics to quality-control and healthcare
+Mini data-analysis project applying statistics to quality-control and healthcare
 scenarios — sampling, descriptive statistics, histograms, boxplots, Pareto, correlation,
 and an empirical CDF. Built with Excel and charted with JavaScript / Chart.js.
 
